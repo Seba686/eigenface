@@ -11,7 +11,6 @@ class QR_algoritmi:
         I = self.identiteettimatriisi(n)
 
         for k in range(n-1):
-
             x = [[rivi[k]] for rivi in R[k:]]
             e = [[rivi[k]] for rivi in I[k:]]
             alpha = -1 * copysign(1, x[0][0]) * self.laskin.normi(x)
