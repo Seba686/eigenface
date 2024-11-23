@@ -28,6 +28,7 @@ class Eigenface:
         
         self.painot = self.laskin.matriisitulo(uudet, kuvat)
     
+    # Palauttaa matriisin missä jokainen sarake vastaa yhtä kuvaa.
     def muodosta_kuvamatriisi(self, p, l):
         kuvat = []
         for i in range(1, p+1):
@@ -38,6 +39,7 @@ class Eigenface:
                 kuvat.append(list(kuvavektori))
         return self.laskin.transpoosi(kuvat)
     
+    # Palauttaa kaikkien kuvien keskiarvon sekä standardisoidun kuvamatriiisin (jonka sarakkeiden keskiarvo on 0).
     def kuvien_keskiarvo(self, kuvat, p, l):
         ka_kuva = [[]]
         for i in kuvat:
@@ -47,6 +49,7 @@ class Eigenface:
         kuvat = self.laskin.matriisierotus(kuvat, ka_kuvamatriisi)
         return ka_kuva, kuvat
     
+    # Palauttaa ne ominaisvektorit jotka vastaavat 99 % kuvien varianssista.
     def laske_paakomponentit(self, kovarianssimatriisi):
         ominaisarvot, ominaisvektorit = self.alg.qr_algoritmi(kovarianssimatriisi)
         summa = sum(ominaisarvot)
@@ -61,6 +64,7 @@ class Eigenface:
         ominaisvektorit = self.laskin.transpoosi(ominaisvektorit)
         return ominaisvektorit
 
+    # Tunnistaa henkilön kuvasta.
     def tunnista(self, kuva):
         painot = self.laskin.matriisitulo(self.ominaisvektorit, self.laskin.matriisierotus(kuva, self.ka_kuva))
         painot = self.laskin.transpoosi(painot)
@@ -71,19 +75,19 @@ class Eigenface:
 
         pituudet.sort(key=lambda x: x[0])
         return self.id[pituudet[0][1]]
-
+    
     def testi(self):
         total = 0
         oikein = 0
         for i in range(1, 5):
             for j in range(7, 11):
                 total += 1
-                kuva = Image.open(f"data/s{i}/{j}.pgm")
+                kuva = Image.open(f"./data/s{i}/{j}.pgm")
                 kuvavektori = np.array(kuva, dtype=float).flatten()
                 veikkaus = self.tunnista(self.laskin.transpoosi([kuvavektori]))
                 if f"s{i}" in veikkaus:
                     oikein += 1
-        print(f"Tunnistettu {100*oikein/total, 2} % kuvista.")
+        print(f"Tunnistettu {100*oikein/total} % kuvista.")
 
 test = Eigenface()
 test.testi()

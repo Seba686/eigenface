@@ -4,6 +4,7 @@ class QR_algoritmi:
     def __init__(self, laskin):
         self.laskin = laskin
 
+    # Laskee matriisin QR-hajotelman.
     def qr_hajotelma(self, A):
         n = len(A)
         R = A
@@ -35,6 +36,7 @@ class QR_algoritmi:
                 R = self.laskin.matriisitulo(Q_t, R)
         return self.laskin.transpoosi(Q), R
     
+    # Laskee matriisin ominaisarvot ja ominaisvektorit.
     def qr_algoritmi(self, A):
         k = 50
         ominaisvektorit = self.identiteettimatriisi(len(A))
@@ -58,6 +60,9 @@ class QR_algoritmi:
         ominaisvektorit.reverse()
         return ominaisarvot, ominaisvektorit
 
+    # Palauttaa [I, 0
+    #            0, Q_min]
+    # matriisin, missä I on n*n identiteettimatriisi.
     def Q_i(self, Q_min, n):
         q = len(Q_min)
         Q = []
@@ -72,6 +77,7 @@ class QR_algoritmi:
                     Q[i].append(0)
         return Q
     
+    # Palauttaa n*n identiteettimatriisin.
     def identiteettimatriisi(self, n):
         return [[float(i == j) for i in range(n)] for j in range(n)]
 
@@ -115,12 +121,14 @@ class Matriisilaskin:
     def transpoosi(self, A):
         return [[i[j] for i in A] for j in range(len(A[0]))]
     
+    # Laske sarakevektorin pituus.
     def normi(self, A):
         pistetulo = 0
         for i in A:
             pistetulo += i[0]**2
         return sqrt(pistetulo)
 
+    # Laske rivivektorin pituus.
     def normi_r(self, A):
         sum = 0
         if type(A[0]) is list:
