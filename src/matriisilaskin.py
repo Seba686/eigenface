@@ -50,6 +50,12 @@ class QR_algoritmi:
             for j in range(len(A)):
                 if i == j:
                     ominaisarvot.append(A_k[i][j])
+
+        ominaisvektorit = self.laskin.transpoosi(ominaisvektorit)
+        ominaisvektorit.reverse()
+        ominaisarvot, ominaisvektorit = (list(t) for t in zip(*sorted(zip(ominaisarvot, ominaisvektorit), reverse=True)))
+        ominaisvektorit = self.laskin.transpoosi(ominaisvektorit)
+        ominaisvektorit.reverse()
         return ominaisarvot, ominaisvektorit
 
     def Q_i(self, Q_min, n):
@@ -79,8 +85,10 @@ class Matriisilaskin:
         tulo = [[0 for _ in range(n)] for _ in range(m)]
         for i in range(m):
             for j in range(n):
+                tmp = 0
                 for k in range(len(B)):
-                    tulo[i][j] += A[i][k] * B[k][j]
+                    tmp += A[i][k] * B[k][j]
+                tulo[i][j] = tmp
         return tulo
 
     def matriisisumma(self, A, B):
@@ -112,3 +120,13 @@ class Matriisilaskin:
         for i in A:
             pistetulo += i[0]**2
         return sqrt(pistetulo)
+
+    def normi_r(self, A):
+        sum = 0
+        if type(A[0]) is list:
+            for i in A[0]:
+                sum += i**2
+            return sqrt(sum)
+        for i in A:
+            sum += i**2
+        return sqrt(sum)
