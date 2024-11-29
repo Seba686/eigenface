@@ -6,75 +6,49 @@ class TestMatriisilaskin(unittest.TestCase):
     def setUp(self):
         self.laskin = Matriisilaskin()
 
-        self.A = [
-            [-4.432, 17.255, -1.411],
-            [-19.101, -15.801, 15.313]
-        ]
+        self.A = np.random.rand(50, 500)
 
-        self.B = [
-            [7.462, 5.936],
-            [8.718, 6.926],
-            [-9.943, -8.442]
-        ]
+        self.B = np.random.rand(500, 25)
 
-        self.C = [
-            [-7.469, 10.219, -9.71],
-            [-17.166, -1.364, -12.821]
-        ]
+        self.C = np.random.rand(500, 1)
 
-        self.D = [
-            [-13.928],
-            [0.932],
-            [5.231],
-            [1.002],
-            [-7.811]
-        ]
-
+        self.D = list(np.random.rand(1, 500))
 
     def test_matriisitulo_toimii(self):
+        oikea = np.matmul(self.A, self.B)
         tulo = self.laskin.matriisitulo(self.A, self.B)
-        oikea = [
-            [131.387, 105.111],
-            [-432.542, -352.094]
-        ]
-        np.testing.assert_allclose(tulo, oikea, atol=0.001)
+        np.testing.assert_allclose(tulo, oikea)
 
     def test_matriisitulo_vaara_koko(self):
         with self.assertRaises(ValueError):
-            self.laskin.matriisitulo(self.A, self.C)
+            self.laskin.matriisitulo(self.B, self.A)
 
     def test_matriisisumma(self):
-        oikea = [
-            [-11.901, 27.474, -11.121],
-            [-36.267, -17.165, 2.492]
-        ]
-        np.testing.assert_allclose(self.laskin.matriisisumma(self.A, self.C), oikea, atol=0.001)
+        oikea = np.add(self.A, self.A)
+        summa = self.laskin.matriisisumma(self.A, self.A)
+        np.testing.assert_allclose(summa, oikea)
     
     def test_matriisisumma_vaara_koko(self):
         with self.assertRaises(ValueError):
             self.laskin.matriisisumma(self.A, self.B)
 
     def test_skalaaritulo(self):
-        oikea = [
-            [18.925, -73.679, 6.025],
-            [81.561, 67.470, -65.387]
-        ]
-        np.testing.assert_allclose(self.laskin.skalaaritulo(self.A, -4.27), oikea, atol=0.001)
+        s = 3.17
+        oikea = self.A * s
+        skalaaritulo = self.laskin.skalaaritulo(self.A, s)
+        np.testing.assert_allclose(skalaaritulo, oikea)
 
     def test_matriisierotus(self):
-        oikea = [
-            [3.037, 7.036, 8.299],
-            [-1.935, -14.437, 28.134]
-        ]
-        np.testing.assert_allclose(self.laskin.matriisierotus(self.A, self.C), oikea, atol=0.001)
+        oikea = np.subtract(self.A, self.A)
+        erotus = self.laskin.matriisierotus(self.A, self.A)
+        np.testing.assert_allclose(erotus, oikea)
 
     def test_matriisin_transpoosi(self):
-        oikea = [
-            [-4.432, -19.101],
-            [17.255, -15.801],
-            [-1.411, 15.313]
-        ]
-        self.assertEqual(self.laskin.transpoosi(self.A), oikea)
+        oikea = np.transpose(self.A)
+        transpoosi = self.laskin.transpoosi(self.A)
+        np.testing.assert_array_equal(transpoosi, oikea)
 
     def test_normi(self):
-        self.assertAlmostEqual(self.laskin.normi(self.D), 16.859, places=3)
+        oikea = np.linalg.norm(self.C)
+        normi = self.laskin.normi(self.C)
+        self.assertAlmostEqual(normi, oikea)

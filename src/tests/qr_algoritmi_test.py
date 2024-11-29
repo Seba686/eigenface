@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
-from matriisilaskin import QR_algoritmi
+from matriisilaskin import QR_algoritmi, Matriisilaskin
+import random
 
 class StubLaskin:
     def matriisitulo(self, A, B):
@@ -21,14 +22,17 @@ class StubLaskin:
 class TestQR_algoritmi(unittest.TestCase):
     def setUp(self):
         self.alg = QR_algoritmi(StubLaskin())
-        self.A = [
+
+        self.A = np.random.rand(20, 20)
+
+        self.B = [
             [4, 4, 0],
             [9, -1, 9],
             [-15, 2, 10]
         ]
 
     def test_identiteettimatriisi(self):
-        np.testing.assert_allclose(self.alg.identiteettimatriisi(7), np.identity(7))
+        np.testing.assert_allclose(self.alg.identiteettimatriisi(20), np.identity(20))
 
     def test_matriisin_laajentaminen(self):
         oikea = [
@@ -39,8 +43,8 @@ class TestQR_algoritmi(unittest.TestCase):
             [0, 0, -15, 2, 10]
         ]
 
-        self.assertEqual(self.alg.Q_i(self.A, 5), oikea)
+        self.assertEqual(self.alg.Q_i(self.B, 5), oikea)
 
     def test_qr_hajotelma(self):
         Q, R = self.alg.qr_hajotelma(self.A)
-        np.testing.assert_allclose(np.matmul(Q, R), self.A, atol=0.001)
+        np.testing.assert_allclose(np.matmul(Q, R), self.A)

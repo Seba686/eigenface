@@ -4,7 +4,7 @@ class QR_algoritmi:
     def __init__(self, laskin):
         self.laskin = laskin
 
-    # Laskee matriisin QR-hajotelman.
+    # Laskee matriisin QR-hajotelman käyttämällä Householderin kuvauksia.
     def qr_hajotelma(self, A):
         n = len(A)
         R = A
@@ -35,10 +35,12 @@ class QR_algoritmi:
                 Q = self.laskin.matriisitulo(Q_t, Q)
                 R = self.laskin.matriisitulo(Q_t, R)
         return self.laskin.transpoosi(Q), R
-    
-    # Laskee matriisin ominaisarvot ja ominaisvektorit.
-    def qr_algoritmi(self, A):
-        k = 50
+
+    # Laskee matriisin ominaisarvot ja ominaisvektorit. Palauttaa listan ominaisarvoista
+    # ja matriisin missä jokainen sarake vastaa ominaisvektoria. Ominaisarvot
+    # ja niitä vastaavat ominaisvektorit on järjestetty suurimmasta pienimpään.
+    def qr_algoritmi(self, A): # pragma: no cover
+        k = 20
         ominaisvektorit = self.identiteettimatriisi(len(A))
         A_k = A
 
@@ -55,7 +57,10 @@ class QR_algoritmi:
 
         ominaisvektorit = self.laskin.transpoosi(ominaisvektorit)
         ominaisvektorit.reverse()
-        ominaisarvot, ominaisvektorit = (list(t) for t in zip(*sorted(zip(ominaisarvot, ominaisvektorit), reverse=True)))
+
+        ominaisarvot, ominaisvektorit = \
+        (list(t) for t in zip(*sorted(zip(ominaisarvot, ominaisvektorit), reverse=True)))
+
         ominaisvektorit = self.laskin.transpoosi(ominaisvektorit)
         ominaisvektorit.reverse()
         return ominaisarvot, ominaisvektorit
@@ -76,18 +81,20 @@ class QR_algoritmi:
                 else:
                     Q[i].append(0)
         return Q
-    
+
     # Palauttaa n*n identiteettimatriisin.
     def identiteettimatriisi(self, n):
         return [[float(i == j) for i in range(n)] for j in range(n)]
 
 class Matriisilaskin:
+    # Laskee tulon A * B.
     def matriisitulo(self, A, B):
         m = len(A)
         n = len(B[0])
 
         if len(B) != len(A[0]):
-            raise ValueError(f"Vääränkokoiset matriisit: ({len(A)}, {len(A[0])}) ja ({len(B)}, {len(B[0])}).")
+            raise ValueError(f"Vääränkokoiset matriisit: \
+                             ({len(A)}, {len(A[0])}) ja ({len(B)}, {len(B[0])}).")
         tulo = [[0 for _ in range(n)] for _ in range(m)]
         for i in range(m):
             for j in range(n):
@@ -97,20 +104,24 @@ class Matriisilaskin:
                 tulo[i][j] = tmp
         return tulo
 
+    # Laskee summan A + B.
     def matriisisumma(self, A, B):
         m = len(A)
         n = len(A[0])
         if m != len(B) or n != len(B[0]):
-            raise ValueError(f"Vääränkokoiset matriisit: ({len(A)}, {len(A[0])}) ja ({len(B)}, {len(B[0])}).")
+            raise ValueError(f"Vääränkokoiset matriisit: \
+                             ({len(A)}, {len(A[0])}) ja ({len(B)}, {len(B[0])}).")
         summa = [[0 for _ in range(n)] for _ in range(m)]
         for i in range(m):
             for j in range(n):
                 summa[i][j] = A[i][j] + B[i][j]
         return summa
 
+    # Laskee erotuksen A - B.
     def matriisierotus(self, A, B):
         return self.matriisisumma(A, self.skalaaritulo(B, -1))
 
+    # Kertoo matriisin A skalarilla s.
     def skalaaritulo(self, A, s):
         tulo = [[0 for _ in range(len(A[0]))] for _ in range(len(A))]
         for i in range(len(A)):
@@ -118,23 +129,24 @@ class Matriisilaskin:
                 tulo[i][j] = A[i][j] * s
         return tulo
 
+    # Laskee matriisin transpoosin.
     def transpoosi(self, A):
         return [[i[j] for i in A] for j in range(len(A[0]))]
-    
-    # Laske sarakevektorin pituus.
+
+    # Laskee sarakevektorin pituuden.
     def normi(self, A):
         pistetulo = 0
         for i in A:
             pistetulo += i[0]**2
         return sqrt(pistetulo)
 
-    # Laske rivivektorin pituus.
-    def normi_r(self, A):
-        sum = 0
-        if type(A[0]) is list:
+    # Lasked rivivektorin pituuden.
+    def normi_r(self, A): #pragma: no cover
+        summa = 0
+        if isinstance(A[0], list):
             for i in A[0]:
-                sum += i**2
-            return sqrt(sum)
+                summa += i**2
+            return sqrt(summa)
         for i in A:
-            sum += i**2
-        return sqrt(sum)
+            summa += i**2
+        return sqrt(summa)

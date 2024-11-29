@@ -1,6 +1,6 @@
-from matriisilaskin import Matriisilaskin, QR_algoritmi
 import numpy as np
 from PIL import Image
+from matriisilaskin import Matriisilaskin, QR_algoritmi
 
 class Eigenface:
     def __init__(self):
@@ -11,23 +11,24 @@ class Eigenface:
         self.id = []
 
         kuvat = self.muodosta_kuvamatriisi(p, l)
-        
+
         self.ka_kuva, kuvat = self.kuvien_keskiarvo(kuvat, p, l)
 
         kovarianssimatriisi = self.laskin.matriisitulo(self.laskin.transpoosi(kuvat), kuvat)
-        kovarianssimatriisi = self.laskin.skalaaritulo(kovarianssimatriisi, 1/len(kovarianssimatriisi))
-       
-        ominaisvektorit = self.laske_paakomponentit(kovarianssimatriisi)
+        kovarianssimatriisi = self.laskin.skalaaritulo(kovarianssimatriisi,
+                                                       1/len(kovarianssimatriisi))
 
+        ominaisvektorit = self.laske_paakomponentit(kovarianssimatriisi)
         ominaisvektorit = self.laskin.matriisitulo(kuvat, ominaisvektorit)
         self.ominaisvektorit = self.laskin.transpoosi(ominaisvektorit)
+
         uudet = []
         for i in self.ominaisvektorit:
             tmp = self.laskin.skalaaritulo([i], 1/self.laskin.normi_r(i))
             uudet.append(tmp[0])
-        
+
         self.painot = self.laskin.matriisitulo(uudet, kuvat)
-    
+
     # Palauttaa matriisin missä jokainen sarake vastaa yhtä kuvaa.
     def muodosta_kuvamatriisi(self, p, l):
         kuvat = []
@@ -38,8 +39,9 @@ class Eigenface:
                 kuvavektori = np.array(kuva, dtype=float).flatten()
                 kuvat.append(list(kuvavektori))
         return self.laskin.transpoosi(kuvat)
-    
-    # Palauttaa kaikkien kuvien keskiarvon sekä standardisoidun kuvamatriiisin (jonka sarakkeiden keskiarvo on 0).
+
+    # Palauttaa kaikkien kuvien keskiarvon sekä standardisoidun kuvamatriiisin
+    # (jonka sarakkeiden keskiarvo on 0).
     def kuvien_keskiarvo(self, kuvat, p, l):
         ka_kuva = [[]]
         for i in kuvat:
@@ -48,7 +50,7 @@ class Eigenface:
         ka_kuvamatriisi = np.tile(np.array(ka_kuva), p*l)
         kuvat = self.laskin.matriisierotus(kuvat, ka_kuvamatriisi)
         return ka_kuva, kuvat
-    
+
     # Palauttaa ne ominaisvektorit jotka vastaavat 99 % kuvien varianssista.
     def laske_paakomponentit(self, kovarianssimatriisi):
         ominaisarvot, ominaisvektorit = self.alg.qr_algoritmi(kovarianssimatriisi)
@@ -66,7 +68,8 @@ class Eigenface:
 
     # Tunnistaa henkilön kuvasta.
     def tunnista(self, kuva):
-        painot = self.laskin.matriisitulo(self.ominaisvektorit, self.laskin.matriisierotus(kuva, self.ka_kuva))
+        painot = self.laskin.matriisitulo(self.ominaisvektorit,
+                                          self.laskin.matriisierotus(kuva, self.ka_kuva))
         painot = self.laskin.transpoosi(painot)
         tmp = self.laskin.transpoosi(self.painot)
         pituudet = []
@@ -75,7 +78,7 @@ class Eigenface:
 
         pituudet.sort(key=lambda x: x[0])
         return self.id[pituudet[0][1]]
-    
+
     def testi(self):
         total = 0
         oikein = 0
