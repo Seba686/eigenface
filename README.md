@@ -1,3 +1,5 @@
+![GHA workflow badge](https://github.com/Seba686/eigenface/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/Seba686/eigenface/graph/badge.svg?token=XAMSGTJHFU)](https://codecov.io/gh/Seba686/eigenface)
+
 # Eigenface
 
 ## Asennus ja käynnistys
