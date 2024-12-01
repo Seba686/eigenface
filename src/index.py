@@ -75,15 +75,7 @@ class Eigenface:
         pituudet = []
         for i, j in enumerate(tmp):
             pituudet.append((self.laskin.normi_r(self.laskin.matriisierotus([j], painot)), i))
-        #print(pituudet)
         pituudet.sort(key=lambda x: x[0])
-        lahimmat = pituudet[:3]
-        #print(f"on {lahimmat[1]}")
-        #abc = lahimmat[0][1] #//len(self.id.keys())
-        #print(len(self.ttt))
-        for i in lahimmat:
-            #print(f"On {self.ttt[i[1]]}")
-            pass
         return self.ttt[pituudet[0][1]]
 
     def testi(self):
@@ -95,7 +87,6 @@ class Eigenface:
                     total += 1
                     kuva = Image.open(f"./data/s{i}/{j}.pgm")
                     kuvavektori = np.array(kuva, dtype=float).flatten()
-                    #print(f"Pitäisi olla {i}")
                     veikkaus = self.tunnista(self.laskin.transpoosi([kuvavektori]))
                     if i == veikkaus:
                         oikein += 1
