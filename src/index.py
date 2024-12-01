@@ -1,16 +1,15 @@
 import numpy as np
+from random import sample
 from PIL import Image
 from matriisilaskin import Matriisilaskin, QR_algoritmi
 
 class Eigenface:
-    def __init__(self):
-        p = 4
-        l = 6
+    def __init__(self, p, l):
         self.laskin = Matriisilaskin()
         self.alg = QR_algoritmi(self.laskin)
-        self.id = []
+        self.id = {k: sample(range(1, 11), l) for k in sample(range(1, 41), p)}
 
-        kuvat = self.muodosta_kuvamatriisi(p, l)
+        kuvat = self.muodosta_kuvamatriisi()
 
         self.ka_kuva, kuvat = self.kuvien_keskiarvo(kuvat, p, l)
 
@@ -30,11 +29,12 @@ class Eigenface:
         self.painot = self.laskin.matriisitulo(uudet, kuvat)
 
     # Palauttaa matriisin missä jokainen sarake vastaa yhtä kuvaa.
-    def muodosta_kuvamatriisi(self, p, l):
+    def muodosta_kuvamatriisi(self):
         kuvat = []
-        for i in range(1, p+1):
-            for j in range(1, l+1):
-                self.id.append(f"s{i}, {j}.pgm")
+        self.ttt = []
+        for i in self.id.keys():
+            for j in self.id[i]:
+                self.ttt.append(i)
                 kuva = Image.open(f"data/s{i}/{j}.pgm")
                 kuvavektori = np.array(kuva, dtype=float).flatten()
                 kuvat.append(list(kuvavektori))
@@ -75,22 +75,32 @@ class Eigenface:
         pituudet = []
         for i, j in enumerate(tmp):
             pituudet.append((self.laskin.normi_r(self.laskin.matriisierotus([j], painot)), i))
-
+        #print(pituudet)
         pituudet.sort(key=lambda x: x[0])
-        return self.id[pituudet[0][1]]
+        lahimmat = pituudet[:3]
+        #print(f"on {lahimmat[1]}")
+        #abc = lahimmat[0][1] #//len(self.id.keys())
+        #print(len(self.ttt))
+        for i in lahimmat:
+            #print(f"On {self.ttt[i[1]]}")
+            pass
+        return self.ttt[pituudet[0][1]]
 
     def testi(self):
         total = 0
         oikein = 0
-        for i in range(1, 5):
-            for j in range(7, 11):
-                total += 1
-                kuva = Image.open(f"./data/s{i}/{j}.pgm")
-                kuvavektori = np.array(kuva, dtype=float).flatten()
-                veikkaus = self.tunnista(self.laskin.transpoosi([kuvavektori]))
-                if f"s{i}" in veikkaus:
-                    oikein += 1
+        for i in self.id.keys():
+            for j in range(1, 11):
+                if j not in self.id[i]:
+                    total += 1
+                    kuva = Image.open(f"./data/s{i}/{j}.pgm")
+                    kuvavektori = np.array(kuva, dtype=float).flatten()
+                    #print(f"Pitäisi olla {i}")
+                    veikkaus = self.tunnista(self.laskin.transpoosi([kuvavektori]))
+                    if i == veikkaus:
+                        oikein += 1
         print(f"Tunnistettu {100*oikein/total} % kuvista.")
 
-test = Eigenface()
-test.testi()
+for i in range(5):
+    test = Eigenface(5, 6)
+    test.testi()
