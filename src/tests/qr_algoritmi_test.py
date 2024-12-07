@@ -1,7 +1,8 @@
 import unittest
+import random
 import numpy as np
 from matriisilaskin import QR_algoritmi, Matriisilaskin
-import random
+random.seed(10)
 
 class StubLaskin:
     def matriisitulo(self, A, B):
@@ -22,6 +23,8 @@ class StubLaskin:
 class TestQR_algoritmi(unittest.TestCase):
     def setUp(self):
         self.alg = QR_algoritmi(StubLaskin())
+        self.laskin = Matriisilaskin()
+        self.alg2 = QR_algoritmi(self.laskin)
 
         self.A = np.random.rand(20, 20)
 
@@ -30,6 +33,10 @@ class TestQR_algoritmi(unittest.TestCase):
             [9, -1, 9],
             [-15, 2, 10]
         ]
+
+        a = [[random.random() for _ in range(100)] for _ in range(10)]
+        b = self.laskin.transpoosi(a)
+        self.C = self.laskin.matriisitulo(a, b)
 
     def test_identiteettimatriisi(self):
         np.testing.assert_allclose(self.alg.identiteettimatriisi(20), np.identity(20))
@@ -48,3 +55,9 @@ class TestQR_algoritmi(unittest.TestCase):
     def test_qr_hajotelma(self):
         Q, R = self.alg.qr_hajotelma(self.A)
         np.testing.assert_allclose(np.matmul(Q, R), self.A)
+
+    def test_laskee_oikeat_ominaisarvot(self):
+        oikea, _ = np.linalg.eigh(self.C)
+        oikea[::-1].sort()
+        ominaisarvot, _ = self.alg2.qr_algoritmi(self.C)
+        np.testing.assert_allclose(ominaisarvot, oikea, rtol=0.05)

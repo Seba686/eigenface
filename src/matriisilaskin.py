@@ -1,5 +1,8 @@
 from math import sqrt, copysign
 
+# Numpya tarvitaan vain tyypin tarkistamista varten normi_r funktiossa.
+import numpy as np
+
 class QR_algoritmi:
     def __init__(self, laskin):
         self.laskin = laskin
@@ -37,9 +40,9 @@ class QR_algoritmi:
         return self.laskin.transpoosi(Q), R
 
     # Laskee matriisin ominaisarvot ja ominaisvektorit. Palauttaa listan ominaisarvoista
-    # ja matriisin missä jokainen sarake vastaa ominaisvektoria. Ominaisarvot
+    # ja matriisin missä jokainen sarake vastaa yhtä ominaisvektoria. Ominaisarvot
     # ja niitä vastaavat ominaisvektorit on järjestetty suurimmasta pienimpään.
-    def qr_algoritmi(self, A): # pragma: no cover
+    def qr_algoritmi(self, A):
         k = 20
         ominaisvektorit = self.identiteettimatriisi(len(A))
         A_k = A
@@ -140,10 +143,10 @@ class Matriisilaskin:
             pistetulo += i[0]**2
         return sqrt(pistetulo)
 
-    # Lasked rivivektorin pituuden.
-    def normi_r(self, A): #pragma: no cover
+    # Laskee rivivektorin pituuden. Syöte voi olla matriisi tai yksiuloitteinen lista.
+    def normi_r(self, A):
         summa = 0
-        if isinstance(A[0], list):
+        if isinstance(A[0], (list, np.ndarray)):
             for i in A[0]:
                 summa += i**2
             return sqrt(summa)

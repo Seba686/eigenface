@@ -12,7 +12,7 @@ class TestMatriisilaskin(unittest.TestCase):
 
         self.C = np.random.rand(500, 1)
 
-        self.D = list(np.random.rand(1, 500))
+        self.D = np.random.rand(1, 500)
 
     def test_matriisitulo_toimii(self):
         oikea = np.matmul(self.A, self.B)
@@ -51,4 +51,15 @@ class TestMatriisilaskin(unittest.TestCase):
     def test_normi(self):
         oikea = np.linalg.norm(self.C)
         normi = self.laskin.normi(self.C)
+        self.assertAlmostEqual(normi, oikea)
+
+    def test_normi_r_matriisi_syotteena(self):
+        oikea = np.linalg.norm(self.D)
+        normi = self.laskin.normi_r(self.D)
+        self.assertAlmostEqual(normi, oikea)
+
+    def test_normi_r_lista_syotteena(self):
+        A = np.random.rand(100)
+        oikea = np.linalg.norm(A)
+        normi = self.laskin.normi_r(A)
         self.assertAlmostEqual(normi, oikea)

@@ -1,5 +1,5 @@
-import numpy as np
 from random import sample
+import numpy as np
 from PIL import Image
 from matriisilaskin import Matriisilaskin, QR_algoritmi
 
@@ -37,7 +37,7 @@ class Eigenface:
                 self.ttt.append(i)
                 kuva = Image.open(f"data/s{i}/{j}.pgm")
                 kuvavektori = np.array(kuva, dtype=float).flatten()
-                kuvat.append(list(kuvavektori))
+                kuvat.append(kuvavektori)
         return self.laskin.transpoosi(kuvat)
 
     # Palauttaa kaikkien kuvien keskiarvon sekä standardisoidun kuvamatriiisin
@@ -92,6 +92,6 @@ class Eigenface:
                         oikein += 1
         print(f"Tunnistettu {100*oikein/total} % kuvista.")
 
-for i in range(5):
-    test = Eigenface(5, 6)
+for _ in range(5):
+    test = Eigenface(5, 5)
     test.testi()
