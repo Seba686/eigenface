@@ -93,5 +93,5 @@ class Eigenface:
         print(f"Tunnistettu {100*oikein/total} % kuvista.")
 
 for _ in range(5):
-    test = Eigenface(5, 5)
+    test = Eigenface(5, 5) # Valitaan viisi kansiota ja jokaisesta viisi kuvaa.
     test.testi()
